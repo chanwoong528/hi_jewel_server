@@ -10,11 +10,8 @@ const cors = require("cors");
 
 const postgresDb = require("./Model/postgres.index");
 
-
 const app = express();
 const PORT = process.env.PORT || 5002;
-
-
 
 app.use(
   cors({
@@ -28,11 +25,8 @@ app.use(express.urlencoded({ limit: "10mb", extended: true }));
 app.use(cookieParser());
 
 //-- Controller Inject --
-// app.use(
-//   API_BASE_URL_TYPE.publicBaseUrl + "/category",
-//   require("./domain/Category/CategoryController")
-// );
-
+app.use("/user", require("./controller/userController"));
+app.use("/product", require("./controller/productController"));
 //-- Controller Inject --
 
 // DB Connection
