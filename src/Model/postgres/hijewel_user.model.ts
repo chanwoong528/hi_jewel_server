@@ -19,7 +19,7 @@ export const User = sequelize.define(
         notEmpty: true,
       },
     },
-    emailType: {
+    type: {
       type: Sequelize.STRING,
       require: true,
       allowNull: false,
@@ -48,7 +48,7 @@ export const User = sequelize.define(
     indexes: [
       {
         unique: true,
-        fields: ["email", "emailType"], // Whatever other field you need to make unique
+        fields: ["email", "type"], // Whatever other field you need to make unique
       },
     ],
   }
