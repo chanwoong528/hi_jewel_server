@@ -16,7 +16,7 @@ const PORT = process.env.PORT || 5002;
 
 app.use(
   cors({
-    origin: [process.env.PROXY_SERVER_URL],
+    origin: [process.env.PROXY_SERVER_URL, "http://localhost:5173"],
     credentials: true,
     methods: ["HEAD", "POST", "PUT", "GET", "PATCH", "DELETE"],
   })
