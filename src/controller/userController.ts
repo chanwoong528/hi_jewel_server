@@ -13,6 +13,7 @@ import { UserParam } from "../service/userService";
 import RESPONSE_CODE from "../utils/CONSTANT/RESPONSE_CODE";
 import ERROR_CODE from "../utils/CONSTANT/ERROR_CODE";
 import { CustomError } from "../utils/exceptions/CustomError";
+import { isLoggedIn } from "../utils/common/middleware";
 
 const expressRouter = require("express");
 
@@ -20,6 +21,22 @@ const router = new expressRouter.Router();
 
 //user get
 router.get("/:userId", () => {});
+
+//user get through access token
+router.get("/", isLoggedIn, (req, res) => {
+  const accessToken = req.cookies.access_token;
+  const decoded = verifyToken(accessToken);
+
+  if (decoded.validity) {
+    // res.cookie("access_token", accessToken);
+    return res
+      .status(RESPONSE_CODE["created"](decoded.data).code)
+      .send(RESPONSE_CODE["created"](decoded.data));
+  }
+  return res
+    .status(ERROR_CODE[decoded.data].code)
+    .send(ERROR_CODE[decoded.data]);
+});
 
 // User Register
 router.post("/register", (req, res) => {
