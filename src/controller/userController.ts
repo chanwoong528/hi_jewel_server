@@ -30,8 +30,8 @@ router.get("/", isLoggedIn, (req, res) => {
   if (decoded.validity) {
     // res.cookie("access_token", accessToken);
     return res
-      .status(RESPONSE_CODE["created"](decoded.data).code)
-      .send(RESPONSE_CODE["created"](decoded.data));
+      .status(RESPONSE_CODE["retrieve"](decoded.data).code)
+      .send(RESPONSE_CODE["retrieve"](decoded.data));
   }
   return res
     .status(ERROR_CODE[decoded.data].code)
@@ -71,7 +71,6 @@ router.post("/login", (req, res) => {
   getSingleUser(undefined, type, email)
     .then(async (result) => {
       const verifyPw = await comparePw(pw, result.pw);
-      console.log(verifyPw);
       if (!!verifyPw) {
         const accessToken = genAccToken(
           result.id,
