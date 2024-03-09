@@ -48,7 +48,8 @@ router.get("/", isLoggedIn, (req, res) => {
   const decoded = verifyToken(accessToken);
 
   if (decoded.validity) {
-    // res.cookie("access_token", accessToken);
+    res.cookie("access_token", accessToken);
+    console.log(decoded);
     return res
       .status(RESPONSE_CODE["retrieve"](decoded.data).code)
       .send(RESPONSE_CODE["retrieve"](decoded.data));
