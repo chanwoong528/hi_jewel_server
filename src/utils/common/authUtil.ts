@@ -24,7 +24,7 @@ export const genRefToken = (
   role: string
 ) => {
   const refreshToken = jwt.sign(
-    { id, type:loginType, email, role },
+    { id, type: loginType, email, role },
     process.env.JWT_SECRET,
     { expiresIn: 60 * 60 * 24 }
     // { expiresIn: 1 }
@@ -39,7 +39,7 @@ export const genAccToken = (
   role: string
 ) => {
   const accessToken = jwt.sign(
-    { id, type:loginType, email, role },
+    { id, type: loginType, email, role },
     process.env.JWT_SECRET,
     { expiresIn: 60 * 15 }
     // { expiresIn: 1 * 10 }
@@ -52,6 +52,8 @@ export const verifyToken = (token: string) => {
     token,
     process.env.JWT_SECRET,
     (err, decoded) => {
+      console.log("verifyToken", decoded, err);
+
       if (err) {
         //TokenExpiredError
         //JsonWebTokenError
