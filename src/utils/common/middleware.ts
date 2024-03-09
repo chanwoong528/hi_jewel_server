@@ -6,11 +6,13 @@ export function isLoggedIn(req, res, next) {
   const accessToken = req.cookies.access_token;
   const compareResult = verifyToken(accessToken);
   console.log("compareResult", compareResult);
+  console.log("accessToken", accessToken);
   if (!compareResult.validity) {
     return res
       .status(ERROR_CODE[compareResult.data].code)
       .send(ERROR_CODE[compareResult.data]);
   }
+
   next();
 }
 
