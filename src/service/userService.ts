@@ -33,6 +33,15 @@ export const createUser = async (userParam: UserParam) => {
   }
 };
 
+export const getUserList = async () => {
+  try {
+    const userList = await User.findAll();
+    return userList.map((user) => user.dataValues);
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const getSingleUser = async (
   userId?: string,
   type?: string,
@@ -51,7 +60,26 @@ export const getSingleUser = async (
       throw new CustomError("NotFoundError", "result not found in database");
     }
     return targetUser.dataValues;
-    
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const updateUser = async (userId: string, userParam: UserParam) => {
+  try {
+    //TODO::
+    const updatedUser = await User.update(
+      {
+        ...(!!userParam.pw && { pw: userParam.pw }),
+        ...(!!userParam.role && { role: userParam.role }),
+      },
+      {
+        where: {
+          id: userId,
+        },
+      }
+    );
+    return updatedUser;
   } catch (error) {
     throw error;
   }

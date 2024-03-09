@@ -26,6 +26,14 @@ export const ProductType = sequelize.define(
         notEmpty: true,
       },
     },
+    imgSrc: {
+      type: Sequelize.STRING,
+      require: true,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
+    },
   },
   {
     indexes: [

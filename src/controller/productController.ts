@@ -37,20 +37,36 @@ router.get("/type", (req, res) => {
 });
 
 // create product type
-router.post("/type", isAdmin, (req, res) => {
+router.post("/type", upload.single("image"), isAdmin, (req, res) => {
   const { label, description } = req.body;
-  createProductType({ label, description })
-    .then((result) => {
-      return res
-        .status(RESPONSE_CODE["created"](result).code)
-        .send(RESPONSE_CODE["created"](result));
-    })
-    .catch((error) => {
-      console.warn("error in createProductType", error);
-      return res
-        .status(ERROR_CODE[error.name].code)
-        .send(ERROR_CODE[error.name]);
-    });
+  try {
+    const blob = new Blob([req.file.buffer], { type: req.file.mimetype });
+    const formData = new FormData();
+    formData.append("image", blob, req.file.originalname);
+    axios
+      .post("https://api.imgbb.com/1/upload", formData, {
+        params: {
+          key: process.env.IMG_BB_API_KEY,
+        },
+      })
+      .then((result) => {
+        if (result.status === 200) {
+          createProductType({
+            label,
+            description,
+            imgSrc: result.data.data.display_url,
+          }).then((result) => {
+            return res
+              .status(RESPONSE_CODE["created"](result).code)
+              .send(RESPONSE_CODE["created"](result));
+          });
+        } else {
+          throw new CustomError("InternalServerError", "image upload failed");
+        }
+      });
+  } catch (error) {
+    return res.status(ERROR_CODE[error.name].code).send(ERROR_CODE[error.name]);
+  }
 });
 //update product type
 //patch:=>  자원의 부분 교체, 자원교체시 일부 필드 필요

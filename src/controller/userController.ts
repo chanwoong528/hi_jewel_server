@@ -1,6 +1,11 @@
 //@ts-nocheck
 
-import { createUser, getSingleUser } from "../service/userService";
+import {
+  createUser,
+  getSingleUser,
+  getUserList,
+  updateUser,
+} from "../service/userService";
 import {
   genAccToken,
   genPw,
@@ -13,14 +18,29 @@ import { UserParam } from "../service/userService";
 import RESPONSE_CODE from "../utils/CONSTANT/RESPONSE_CODE";
 import ERROR_CODE from "../utils/CONSTANT/ERROR_CODE";
 import { CustomError } from "../utils/exceptions/CustomError";
-import { isLoggedIn } from "../utils/common/middleware";
+import { isAdmin, isLoggedIn } from "../utils/common/middleware";
 
 const expressRouter = require("express");
 
 const router = new expressRouter.Router();
 
 //user get
-router.get("/:userId", () => {});
+// router.get("/:userId", () => {});
+
+router.get("/list", isAdmin, (req, res) => {
+  getUserList()
+    .then((result) => {
+      return res
+        .status(RESPONSE_CODE["retrieve"](result).code)
+        .send(RESPONSE_CODE["retrieve"](result));
+    })
+    .catch((error) => {
+      console.warn(error);
+      return res
+        .status(ERROR_CODE[error.name].code)
+        .send(ERROR_CODE[error.name]);
+    });
+});
 
 //user get through access token
 router.get("/", isLoggedIn, (req, res) => {
@@ -62,8 +82,43 @@ router.post("/register", (req, res) => {
     });
 });
 
-//User update
-router.patch("/update", (req, res) => {});
+//User update [self] || [admin]
+router.patch("/update", isLoggedIn, (req, res) => {
+  const { id, pw, type, role } = req.body;
+  const accessToken = req.cookies.access_token;
+  const decoded = verifyToken(accessToken);
+
+  if (!decoded.validity) {
+    // res.cookie("access_token", accessToken);
+    return res
+      .status(ERROR_CODE[decoded.data].code)
+      .send(ERROR_CODE[decoded.data]);
+  }
+  if (decoded.data.role !== "admin" && id !== decoded.data.id) {
+    return res
+      .status(ERROR_CODE["AuthorizeLevelNotMatch"].code)
+      .send(ERROR_CODE["AuthorizeLevelNotMatch"]);
+  }
+
+  const hashedPw = genPw(type, pw);
+  let userParam: UserParam = {
+    ...(!!pw && { pw: hashedPw }),
+    ...(!!role && { role: role }),
+  };
+
+  updateUser(id, userParam)
+    .then((result) => {
+      return res
+        .status(RESPONSE_CODE["patch"](result).code)
+        .send(RESPONSE_CODE["patch"](result));
+    })
+    .catch((error) => {
+      console.warn(error);
+      return res
+        .status(ERROR_CODE[error.name].code)
+        .send(ERROR_CODE[error.name]);
+    });
+});
 
 // User Login -> return accessToken, refreshToken
 router.post("/login", (req, res) => {
