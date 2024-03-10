@@ -55,10 +55,10 @@ router.get("/", isLoggedIn, (req, res) => {
   const decoded = verifyToken(accessToken);
 
   if (decoded.validity) {
-    res.cookie("access_token", accessToken, cookieOption);
+    res.cookie("access_token", accessToken, cookieOptions);
     console.log(
       "res.cookie",
-      res.cookie("access_token", accessToken, cookieOption)
+      res.cookie("access_token", accessToken, cookieOptions)
     );
     return res
       .status(RESPONSE_CODE["retrieve"](decoded.data).code)
@@ -151,7 +151,7 @@ router.post("/login", (req, res) => {
           result.role
         );
         res.cookie("access_token", accessToken, cookieOptions);
-        res.cookie("refresh_token", refreshToken, cookieOption);
+        res.cookie("refresh_token", refreshToken, cookieOptions);
         result["access_token"] = accessToken;
         result["refresh_token"] = refreshToken;
         return res
@@ -180,7 +180,7 @@ router.post("/generate-access-token", (req, res) => {
       decoded.data.email,
       decoded.data.role
     );
-    res.cookie("access_token", accessToken, cookieOption);
+    res.cookie("access_token", accessToken, cookieOptions);
     return res
       .status(RESPONSE_CODE["created"](decoded.data).code)
       .send(RESPONSE_CODE["created"](decoded.data));
