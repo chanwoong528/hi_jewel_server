@@ -3,10 +3,9 @@ import { verifyToken } from "./authUtil";
 import ERROR_CODE from "../CONSTANT/ERROR_CODE";
 
 export function isLoggedIn(req, res, next) {
-  const accessToken = req.cookies.access_token;
+  const accessToken = req.headers.authorization.match(/Bearer\s(.+)/)[1];
   const compareResult = verifyToken(accessToken);
-  console.log("compareResult", compareResult);
-  console.log("accessToken", accessToken);
+
   if (!compareResult.validity) {
     return res
       .status(ERROR_CODE[compareResult.data].code)
@@ -17,7 +16,7 @@ export function isLoggedIn(req, res, next) {
 }
 
 export function isAdmin(req, res, next) {
-  const accessToken = req.cookies.access_token;
+  const accessToken = req.headers.authorization.match(/Bearer\s(.+)/)[1];
   const compareResult = verifyToken(accessToken);
 
   if (!compareResult.validity) {

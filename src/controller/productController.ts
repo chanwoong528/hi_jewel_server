@@ -123,7 +123,7 @@ router.get("/", (req, res) => {
 //create product
 router.post("/", upload.single("image"), isAdmin, async (req, res) => {
   const { title, description, typeId } = req.body;
-  const verifyUser = verifyToken(req.cookies.access_token);
+  const verifyUser = verifyToken(req.headers.authorization.match(/Bearer\s(.+)/)[1]);
 
   try {
     const productType = await getProductType(typeId);

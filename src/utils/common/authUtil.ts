@@ -52,8 +52,6 @@ export const verifyToken = (token: string) => {
     token,
     process.env.JWT_SECRET,
     (err, decoded) => {
-      console.log("verifyToken", decoded, err);
-
       if (err) {
         //TokenExpiredError
         //JsonWebTokenError

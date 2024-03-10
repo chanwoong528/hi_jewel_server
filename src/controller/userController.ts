@@ -44,12 +44,11 @@ router.get("/list", isAdmin, (req, res) => {
 
 //user get through access token
 router.get("/", isLoggedIn, (req, res) => {
-  const accessToken = req.cookies.access_token;
+  const accessToken = req.headers.authorization.match(/Bearer\s(.+)/)[1];
   const decoded = verifyToken(accessToken);
 
   if (decoded.validity) {
     res.cookie("access_token", accessToken);
-    console.log(decoded);
     return res
       .status(RESPONSE_CODE["retrieve"](decoded.data).code)
       .send(RESPONSE_CODE["retrieve"](decoded.data));
@@ -86,7 +85,7 @@ router.post("/register", (req, res) => {
 //User update [self] || [admin]
 router.patch("/update", isLoggedIn, (req, res) => {
   const { id, pw, type, role } = req.body;
-  const accessToken = req.cookies.access_token;
+  const accessToken = req.headers.authorization.match(/Bearer\s(.+)/)[1];
   const decoded = verifyToken(accessToken);
 
   if (!decoded.validity) {
