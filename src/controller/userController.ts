@@ -26,8 +26,14 @@ const router = new expressRouter.Router();
 
 //user get
 // router.get("/:userId", () => {});
+const cookieOptions = {
+  expires: new Date(Date.now() + 900000),
+  httpOnly: true,
+  secure: true,
+  sameSite: "none",
+};
 
-router.get("/list", isAdmin, (req, res) => {
+https: router.get("/list", isAdmin, (req, res) => {
   getUserList()
     .then((result) => {
       return res
@@ -44,11 +50,16 @@ router.get("/list", isAdmin, (req, res) => {
 
 //user get through access token
 router.get("/", isLoggedIn, (req, res) => {
-  const accessToken = req.headers.authorization.match(/Bearer\s(.+)/)[1];
+  const accessToken = req.headers.authorization.split(/Bearer\s(.+)/)[1];
+  console.log("user/get", accessToken);
   const decoded = verifyToken(accessToken);
 
   if (decoded.validity) {
-    res.cookie("access_token", accessToken);
+    res.cookie("access_token", accessToken, cookieOption);
+    console.log(
+      "res.cookie",
+      res.cookie("access_token", accessToken, cookieOption)
+    );
     return res
       .status(RESPONSE_CODE["retrieve"](decoded.data).code)
       .send(RESPONSE_CODE["retrieve"](decoded.data));
@@ -139,8 +150,10 @@ router.post("/login", (req, res) => {
           result.email,
           result.role
         );
-        res.cookie("access_token", accessToken);
-        res.cookie("refresh_token", refreshToken);
+        res.cookie("access_token", accessToken, cookieOptions);
+        res.cookie("refresh_token", refreshToken, cookieOption);
+        result["access_token"] = accessToken;
+        result["refresh_token"] = refreshToken;
         return res
           .status(RESPONSE_CODE["created"](result).code)
           .send(RESPONSE_CODE["created"](result));
@@ -167,7 +180,7 @@ router.post("/generate-access-token", (req, res) => {
       decoded.data.email,
       decoded.data.role
     );
-    res.cookie("access_token", accessToken);
+    res.cookie("access_token", accessToken, cookieOption);
     return res
       .status(RESPONSE_CODE["created"](decoded.data).code)
       .send(RESPONSE_CODE["created"](decoded.data));
