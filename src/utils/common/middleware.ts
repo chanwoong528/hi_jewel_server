@@ -3,7 +3,7 @@ import { verifyToken } from "./authUtil";
 import ERROR_CODE from "../CONSTANT/ERROR_CODE";
 
 export function isLoggedIn(req, res, next) {
-  const accessToken = req.headers.authorization.match(/Bearer\s(.+)/)[1];
+  const accessToken = req.headers.authorization.match(/Bearer\s(.+)/)[1] || "";
   const compareResult = verifyToken(accessToken);
 
   if (!compareResult.validity) {
@@ -16,7 +16,7 @@ export function isLoggedIn(req, res, next) {
 }
 
 export function isAdmin(req, res, next) {
-  const accessToken = req.headers.authorization.match(/Bearer\s(.+)/)[1];
+  const accessToken = req.headers.authorization.match(/Bearer\s(.+)/)[1] || "";
   const compareResult = verifyToken(accessToken);
 
   if (!compareResult.validity) {
