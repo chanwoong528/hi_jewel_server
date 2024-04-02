@@ -6,6 +6,7 @@ import {
   createProductType,
   getProduct,
   getProductType,
+  updateProduct,
   updateProductType,
 } from "../service/productService";
 import RESPONSE_CODE from "../utils/CONSTANT/RESPONSE_CODE";
@@ -151,6 +152,33 @@ router.post("/", upload.single("image"), isAdmin, async (req, res) => {
         }
       });
   } catch (error) {
+    return res.status(ERROR_CODE[error.name].code).send(ERROR_CODE[error.name]);
+  }
+});
+
+//update product type
+//patch:=>  자원의 부분 교체, 자원교체시 일부 필드 필요
+router.patch("/:id", upload.single("image"), isAdmin, async (req, res) => {
+  const { title, description, typeId, isPresented } = req.body;
+  try {
+    const targetProduct = await getProduct(req.params.id);
+    if (!targetProduct) {
+      throw new CustomError("NotFoundError", "result not found in database");
+    }
+    const editImgUrl = await uploadImageToImgBB(req);
+    const result = await updateProduct(targetProduct.id, {
+      title,
+      description,
+      typeId,
+      isPresented,
+      imgSrc: editImgUrl,
+    });
+
+    return res
+      .status(RESPONSE_CODE["patch"](result).code)
+      .send(RESPONSE_CODE["patch"](result));
+  } catch (error) {
+    console.warn("error in update productType", error);
     return res.status(ERROR_CODE[error.name].code).send(ERROR_CODE[error.name]);
   }
 });

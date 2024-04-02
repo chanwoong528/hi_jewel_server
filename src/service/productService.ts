@@ -3,8 +3,8 @@ import { ProductType } from "../Model/postgres/product_type.model";
 import { CustomError } from "../utils/exceptions/CustomError";
 
 export interface ProductParam {
-  typeId: string;
   userId: string;
+  typeId: string;
   title: string;
   description: string;
   imgSrc: string;
@@ -56,6 +56,7 @@ export const getProductType = async (productTypeId?: string) => {
     throw error;
   }
 };
+
 export const updateProductType = async (
   id: string,
   productTypeParam: ProductTypeParam
@@ -120,6 +121,45 @@ export const getProduct = async (productId?: string) => {
 
     const products = await Product.findAll();
     return products.map((product) => product.dataValues);
+  } catch (error) {
+    throw error;
+  }
+};
+export const updateProduct = async (id: string, productParam: ProductParam) => {
+  try {
+    const updatedProduct = await Product.update(
+      {
+        ...(!!productParam.title && { title: productParam.title }),
+        ...(!!productParam.description && {
+          description: productParam.description,
+        }),
+        ...(!!productParam.imgSrc && { imgSrc: productParam.imgSrc }),
+        ...(!!productParam.isPresented && {
+          isPresented: productParam.isPresented,
+        }),
+        ...(!!productParam.typeId && { typeId: productParam.typeId }),
+      },
+      {
+        where: {
+          id: id,
+        },
+      }
+    );
+    if (updatedProduct[0] < 1) {
+      throw new CustomError("NotFoundError", "result not found in database");
+    }
+    let updatedResult = {
+      ...(!!productParam.title && { title: productParam.title }),
+      ...(!!productParam.description && {
+        description: productParam.description,
+      }),
+      ...(!!productParam.imgSrc && { imgSrc: productParam.imgSrc }),
+      ...(!!productParam.isPresented && {
+        isPresented: productParam.isPresented,
+      }),
+      ...(!!productParam.typeId && { typeId: productParam.typeId }),
+    };
+    return updatedResult;
   } catch (error) {
     throw error;
   }
