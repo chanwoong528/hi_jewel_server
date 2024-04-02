@@ -3,7 +3,14 @@ import { verifyToken } from "./authUtil";
 import ERROR_CODE from "../CONSTANT/ERROR_CODE";
 
 export function isLoggedIn(req, res, next) {
-  const accessToken = req.headers.authorization.match(/Bearer\s(.+)/)[1] || "";
+  const accessToken = req.headers.authorization?.match(/Bearer\s(.+)/)[1] || "";
+
+  if (!accessToken) {
+    return res
+      .status(ERROR_CODE["NotFoundError"].code)
+      .send(ERROR_CODE["NotFoundError"]);
+  }
+
   const compareResult = verifyToken(accessToken);
 
   if (!compareResult.validity) {
@@ -11,7 +18,6 @@ export function isLoggedIn(req, res, next) {
       .status(ERROR_CODE[compareResult.data].code)
       .send(ERROR_CODE[compareResult.data]);
   }
-
   next();
 }
 

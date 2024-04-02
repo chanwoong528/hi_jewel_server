@@ -5,7 +5,11 @@ import {
   getSingleUser,
   getUserList,
   updateUser,
+  UserParam,
 } from "../service/userService";
+
+import { isAdmin, isLoggedIn } from "../utils/common/middleware";
+
 import {
   genAccToken,
   genPw,
@@ -14,18 +18,14 @@ import {
   verifyToken,
 } from "../utils/common/authUtil";
 
-import { UserParam } from "../service/userService";
+import { CustomError } from "../utils/exceptions/CustomError";
 import RESPONSE_CODE from "../utils/CONSTANT/RESPONSE_CODE";
 import ERROR_CODE from "../utils/CONSTANT/ERROR_CODE";
-import { CustomError } from "../utils/exceptions/CustomError";
-import { isAdmin, isLoggedIn } from "../utils/common/middleware";
 
 const expressRouter = require("express");
 
 const router = new expressRouter.Router();
 
-//user get
-// router.get("/:userId", () => {});
 const cookieOptions = {
   expires: new Date(Date.now() + 900000),
   httpOnly: true,
@@ -33,7 +33,7 @@ const cookieOptions = {
   sameSite: "none",
 };
 
-https: router.get("/list", isAdmin, (req, res) => {
+router.get("/list", isAdmin, (req, res) => {
   getUserList()
     .then((result) => {
       return res
@@ -42,7 +42,7 @@ https: router.get("/list", isAdmin, (req, res) => {
     })
     .catch((error) => {
       console.warn(error);
-      return res
+      return ress
         .status(ERROR_CODE[error.name].code)
         .send(ERROR_CODE[error.name]);
     });

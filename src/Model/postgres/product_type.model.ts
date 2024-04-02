@@ -34,6 +34,15 @@ export const ProductType = sequelize.define(
         notEmpty: true,
       },
     },
+    isPresented: {
+      type: Sequelize.STRING,
+      require: true,
+      allowNull: false,
+      defaultValue: 0,
+      validate: {
+        notEmpty: true,
+      },
+    },
   },
   {
     indexes: [

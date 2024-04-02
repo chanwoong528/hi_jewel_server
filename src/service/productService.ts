@@ -14,6 +14,8 @@ export interface ProductParam {
 export interface ProductTypeParam {
   label: string;
   description: string;
+  imgSrc: string;
+  isPresented: "0" | "1";
 }
 
 export const createProductType = async (productTypeParam: ProductTypeParam) => {
@@ -61,8 +63,14 @@ export const updateProductType = async (
   try {
     const updatedProductType = await ProductType.update(
       {
-        label: productTypeParam.label,
-        description: productTypeParam.description,
+        ...(!!productTypeParam.label && { label: productTypeParam.label }),
+        ...(!!productTypeParam.description && {
+          description: productTypeParam.description,
+        }),
+        ...(!!productTypeParam.imgSrc && { imgSrc: productTypeParam.imgSrc }),
+        ...(!!productTypeParam.isPresented && {
+          isPresented: productTypeParam.isPresented,
+        }),
       },
       {
         where: {
@@ -73,7 +81,17 @@ export const updateProductType = async (
     if (updatedProductType[0] < 1) {
       throw new CustomError("NotFoundError", "result not found in database");
     }
-    return updatedProductType;
+    let updatedResult = {
+      ...(!!productTypeParam.label && { label: productTypeParam.label }),
+      ...(!!productTypeParam.description && {
+        description: productTypeParam.description,
+      }),
+      ...(!!productTypeParam.imgSrc && { imgSrc: productTypeParam.imgSrc }),
+      ...(!!productTypeParam.isPresented && {
+        isPresented: productTypeParam.isPresented,
+      }),
+    };
+    return updatedResult;
   } catch (error) {
     throw error;
   }

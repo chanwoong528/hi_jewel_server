@@ -14,12 +14,10 @@ const RESPONSE_CODE = {
       data: data,
     };
   },
-  patch: (id) => {
+  patch: (data) => {
     return {
       message: "Data Patch Succeeded",
-      data: {
-        id: id,
-      },
+      data,
       code: 200,
     };
   },
