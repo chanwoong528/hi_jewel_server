@@ -32,6 +32,8 @@ app.use(cookieParser());
 //-- Controller Inject --
 app.use("/user", require("./controller/userController"));
 app.use("/product", require("./controller/productController"));
+app.use("/post", require("./controller/postController"));
+
 //-- Controller Inject --
 
 // DB Connection

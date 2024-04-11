@@ -25,6 +25,7 @@ export const sequelize = new Sequelize(
 const productType = require("./postgres/product_type.model");
 const product = require("./postgres/product.model");
 const hiJewelUser = require("./postgres/hijewel_user.model");
+const post = require("./postgres/post.model");
 //** Model  */
 export const db = {
   Sequelize: Sequelize,
@@ -33,6 +34,7 @@ export const db = {
   productType: productType,
   product: product,
   hiJewelUser: hiJewelUser,
+  post: post,
 };
 
 Object.keys(db).forEach((model) => {
