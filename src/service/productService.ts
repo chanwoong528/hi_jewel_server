@@ -62,27 +62,7 @@ export const updateProductType = async (
   productTypeParam: ProductTypeParam
 ) => {
   try {
-    const updatedProductType = await ProductType.update(
-      {
-        ...(!!productTypeParam.label && { label: productTypeParam.label }),
-        ...(!!productTypeParam.description && {
-          description: productTypeParam.description,
-        }),
-        ...(!!productTypeParam.imgSrc && { imgSrc: productTypeParam.imgSrc }),
-        ...(!!productTypeParam.isPresented && {
-          isPresented: productTypeParam.isPresented,
-        }),
-      },
-      {
-        where: {
-          id: id,
-        },
-      }
-    );
-    if (updatedProductType[0] < 1) {
-      throw new CustomError("NotFoundError", "result not found in database");
-    }
-    let updatedResult = {
+    const updateProductTypeTuples = {
       ...(!!productTypeParam.label && { label: productTypeParam.label }),
       ...(!!productTypeParam.description && {
         description: productTypeParam.description,
@@ -92,7 +72,20 @@ export const updateProductType = async (
         isPresented: productTypeParam.isPresented,
       }),
     };
-    return updatedResult;
+
+    const updatedProductType = await ProductType.update(
+      { ...updateProductTypeTuples },
+      {
+        where: {
+          id: id,
+        },
+      }
+    );
+    if (updatedProductType[0] < 1) {
+      throw new CustomError("NotFoundError", "result not found in database");
+    }
+
+    return updateProductTypeTuples;
   } catch (error) {
     throw error;
   }
@@ -127,28 +120,7 @@ export const getProduct = async (productId?: string) => {
 };
 export const updateProduct = async (id: string, productParam: ProductParam) => {
   try {
-    const updatedProduct = await Product.update(
-      {
-        ...(!!productParam.title && { title: productParam.title }),
-        ...(!!productParam.description && {
-          description: productParam.description,
-        }),
-        ...(!!productParam.imgSrc && { imgSrc: productParam.imgSrc }),
-        ...(!!productParam.isPresented && {
-          isPresented: productParam.isPresented,
-        }),
-        ...(!!productParam.typeId && { typeId: productParam.typeId }),
-      },
-      {
-        where: {
-          id: id,
-        },
-      }
-    );
-    if (updatedProduct[0] < 1) {
-      throw new CustomError("NotFoundError", "result not found in database");
-    }
-    let updatedResult = {
+    const updateProductTuples = {
       ...(!!productParam.title && { title: productParam.title }),
       ...(!!productParam.description && {
         description: productParam.description,
@@ -159,7 +131,20 @@ export const updateProduct = async (id: string, productParam: ProductParam) => {
       }),
       ...(!!productParam.typeId && { typeId: productParam.typeId }),
     };
-    return updatedResult;
+
+    const updatedProduct = await Product.update(
+      { ...updateProductTuples },
+      {
+        where: {
+          id: id,
+        },
+      }
+    );
+    if (updatedProduct[0] < 1) {
+      throw new CustomError("NotFoundError", "result not found in database");
+    }
+
+    return updateProductTuples;
   } catch (error) {
     throw error;
   }

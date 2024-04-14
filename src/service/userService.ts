@@ -24,7 +24,10 @@ export const createUser = async (userParam: UserParam) => {
 
     if (!userParam.role) userParam.role = "user";
 
-    const newUser = await User.create({ ...userParam });
+    const newUser = await User.create({
+      ...userParam,
+      attributes: { exclude: ["pw"] },
+    });
 
     delete newUser.dataValues["pw"];
     return newUser.dataValues;
@@ -35,8 +38,12 @@ export const createUser = async (userParam: UserParam) => {
 
 export const getUserList = async () => {
   try {
-    const userList = await User.findAll();
-    return userList.map((user) => user.dataValues);
+    const userList = await User.findAll({
+      attributes: { exclude: ["pw"] },
+    });
+
+    const returnUserList = await userList.map((user) => user.dataValues);
+    return returnUserList;
   } catch (error) {
     throw error;
   }

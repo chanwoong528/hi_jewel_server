@@ -1,6 +1,6 @@
-//@ts-nocheck
 import Sequelize from "sequelize";
 import { sequelize } from "../postgres.index";
+const { Op } = require("sequelize");
 
 export const Post = sequelize.define(
   "post",
@@ -12,7 +12,7 @@ export const Post = sequelize.define(
     },
     title: {
       type: Sequelize.STRING,
-      require: true,
+
       allowNull: false,
       validate: {
         notEmpty: true,
@@ -21,7 +21,7 @@ export const Post = sequelize.define(
     content: {
       //html
       type: Sequelize.STRING,
-      require: true,
+
       allowNull: false,
       validate: {
         notEmpty: true,
@@ -29,7 +29,7 @@ export const Post = sequelize.define(
     },
     postPw: {
       type: Sequelize.STRING,
-      require: true,
+
       allowNull: false,
       validate: {
         notEmpty: true,
@@ -37,7 +37,7 @@ export const Post = sequelize.define(
     },
     userEmail: {
       type: Sequelize.STRING,
-      require: true,
+
       allowNull: false,
       validate: {
         notEmpty: true,
@@ -45,7 +45,7 @@ export const Post = sequelize.define(
     },
     type: {
       type: Sequelize.STRING,
-      require: true,
+
       allowNull: false,
       defaultValue: 0, //0:qna, 1:notice, 2:comment
       validate: {
@@ -58,7 +58,6 @@ export const Post = sequelize.define(
     },
     isPresented: {
       type: Sequelize.STRING,
-      require: true,
       allowNull: false,
       defaultValue: 0,
       validate: {
@@ -75,3 +74,7 @@ export const Post = sequelize.define(
     ],
   }
 );
+//** custom Queries */
+
+// Post.associations = {
+
