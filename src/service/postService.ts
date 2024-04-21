@@ -1,6 +1,7 @@
 import { Post } from "../Model/postgres/post.model";
 import { CustomError } from "../utils/exceptions/CustomError";
 import { sequelize } from "../Model/postgres.index";
+import { Op } from "sequelize";
 
 interface PostParam {
   title: string;
@@ -16,6 +17,7 @@ export const createPost = async (postParam: PostParam) => {
   try {
     const newPost = await Post.create({
       ...postParam,
+      title: postParam.title ? postParam.title : "TypeComment",
       postPw: postParam.postPw ? postParam.postPw : "1234",
     });
     return newPost.dataValues;
@@ -27,23 +29,35 @@ export const createPost = async (postParam: PostParam) => {
 export const getPost = async (postId?: string, getType?: string) => {
   try {
     if (!!postId) {
-      const post = await Post.findOne({
-        where: { id: postId },
+      const post = await Post.findAll({
+        where: {
+          [Op.or]: [{ id: postId }, { parentPostId: postId }],
+        },
+        order: [["type", "ASC"]],
       });
+
       if (!post) {
         throw new CustomError("NotFoundError", "result not found in database");
       }
-      return post.dataValues;
+      const result = {
+        post: await post.find((item) => item.dataValues.id === postId)
+          ?.dataValues,
+        comments: await post.map((post) => post.dataValues),
+      };
+      // console.log(result);
+
+      return result;
     }
     if (getType === "user") {
       const postsForUsers = await sequelize.query(`
       SELECT *
       FROM (
           SELECT *,
-                ROW_NUMBER() OVER (PARTITION BY type ORDER BY "createdAt") AS row_num
+                ROW_NUMBER() OVER (PARTITION BY type ORDER BY "createdAt" ) AS row_num
           FROM posts
       ) AS ranked_data
-      WHERE  "isPresented" ='1' and ( type = '0' OR (type = '1' AND row_num <= 5));
+      WHERE  "isPresented" ='1' and (type = '0' or (type = '1' AND row_num <= 5))
+      order by  type desc;
       `);
       const postForUserData = await postsForUsers[0];
       return postForUserData;

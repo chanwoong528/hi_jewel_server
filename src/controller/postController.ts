@@ -26,7 +26,6 @@ router.get("/", (req, res) => {
 });
 
 router.post("/", (req, res) => {
-  console.log(req.body);
   createPost(req.body)
     .then((result) => {
       return res
