@@ -41,8 +41,8 @@ export const genAccToken = (
   const accessToken = jwt.sign(
     { id, type: loginType, email, role },
     process.env.JWT_SECRET,
-    // { expiresIn: 60 * 15 }
-    { expiresIn: 1 * 5 }
+    { expiresIn: 60 * 15 }
+    // { expiresIn: 1 * 5 }
   );
   return accessToken;
 };
