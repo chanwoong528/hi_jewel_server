@@ -165,7 +165,7 @@ router.post("/login", (req, res) => {
 
 // User login with refreshToken -> return accessToken
 router.post("/generate-access-token", (req, res) => {
-  const refreshToken = req.cookies.refresh_token;
+  const refreshToken = req.body.refreshToken;
   const decoded = verifyToken(refreshToken);
 
   if (decoded.validity) {
@@ -176,6 +176,8 @@ router.post("/generate-access-token", (req, res) => {
       decoded.data.role
     );
     res.cookie("access_token", accessToken, cookieOptions);
+    decoded.data["access_token"] = accessToken;
+    decoded.data["refresh_token"] = refreshToken;
     return res
       .status(RESPONSE_CODE["created"](decoded.data).code)
       .send(RESPONSE_CODE["created"](decoded.data));

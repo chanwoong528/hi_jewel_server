@@ -49,18 +49,33 @@ export const getPost = async (postId?: string, getType?: string) => {
       return result;
     }
     if (getType === "user") {
-      const postsForUsers = await sequelize.query(`
-      SELECT *
-      FROM (
-          SELECT *,
-                ROW_NUMBER() OVER (PARTITION BY type ORDER BY "createdAt" ) AS row_num
-          FROM posts
-      ) AS ranked_data
-      WHERE  "isPresented" ='1' and (type = '0' or (type = '1' AND row_num <= 5))
-      order by  type desc;
-      `);
-      const postForUserData = await postsForUsers[0];
-      return postForUserData;
+      const noticePosts = (
+        await Post.findAll({
+          where: { type: "0", isPresented: "1" },
+          limit: 5,
+          order: [["createdAt", "DESC"]],
+        })
+      ).map((post) => post.dataValues);
+
+      const qnaPosts = (
+        await Post.findAll({
+          where: { type: "1", isPresented: "1" },
+          order: [["createdAt", "DESC"]],
+        })
+      ).map((post) => post.dataValues);
+      //       const postsForUsers = await sequelize.query(`
+      //       SELECT *
+      //       FROM (
+      //           SELECT *,
+      //                 ROW_NUMBER() OVER (PARTITION BY type ORDER BY "createdAt" ) AS row_num
+      //           FROM posts
+      //       ) AS ranked_data
+      //       WHERE  "isPresented" ='1' and (type = '0' or (type = '1' AND row_num <= 5))
+      //       order by  type desc;
+      //       `);
+      //       const postForUserData = await postsForUsers[0];
+      const result = [...noticePosts, ...qnaPosts];
+      return result;
     }
 
     const posts = await Post.findAll();
