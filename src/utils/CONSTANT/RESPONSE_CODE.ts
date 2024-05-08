@@ -28,6 +28,12 @@ const RESPONSE_CODE = {
       code: 200,
     };
   },
+  delete: () => {
+    return {
+      message: "Data Delete Succeeded",
+      code: 204,
+    };
+  },
 };
 
 export default RESPONSE_CODE;

@@ -1,9 +1,11 @@
 //@ts-nocheck
 import axios from "axios";
-
+import { CustomError } from "../utils/exceptions/CustomError";
 import {
   createProduct,
   createProductType,
+  deleteProduct,
+  deleteProductType,
   getProduct,
   getProductType,
   updateProduct,
@@ -80,6 +82,32 @@ router.patch("/type/:id", upload.single("image"), isAdmin, async (req, res) => {
       .send(RESPONSE_CODE["patch"](result));
   } catch (error) {
     console.warn("error in update productType", error);
+    return res.status(ERROR_CODE[error.name].code).send(ERROR_CODE[error.name]);
+  }
+});
+
+//Product [TYPE] Delete
+router.delete("/type/:id", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const productsById = await getProduct(undefined, id);
+
+    if (productsById.length > 0) {
+      throw new CustomError("ChildExist", "result not found in database");
+    }
+    const targetDeleteProductTypeItem = await deleteProductType(id);
+
+    if (targetDeleteProductTypeItem > 0) {
+      return res
+        .status(RESPONSE_CODE["delete"]().code)
+        .send(RESPONSE_CODE["delete"]());
+    }
+
+    return res
+      .status(RESPONSE_CODE["delete"]().code)
+      .send(RESPONSE_CODE["delete"]());
+  } catch (error) {
     return res.status(ERROR_CODE[error.name].code).send(ERROR_CODE[error.name]);
   }
 });
@@ -179,6 +207,31 @@ router.patch("/:id", upload.single("image"), isAdmin, async (req, res) => {
       .send(RESPONSE_CODE["patch"](result));
   } catch (error) {
     console.warn("error in update productType", error);
+    return res.status(ERROR_CODE[error.name].code).send(ERROR_CODE[error.name]);
+  }
+});
+
+//Product Delete
+router.delete("/:id", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const targetProduct = await getProduct(id);
+    if (!targetProduct) {
+      throw new CustomError("NotFoundError", "result not found in database");
+    }
+
+    const targetDeleteProduct = await deleteProduct(id);
+    if (targetDeleteProduct > 0) {
+      return res
+        .status(RESPONSE_CODE["delete"]().code)
+        .send(RESPONSE_CODE["delete"]());
+    }
+
+    return res
+      .status(RESPONSE_CODE["delete"]().code)
+      .send(RESPONSE_CODE["delete"]());
+  } catch (error) {
     return res.status(ERROR_CODE[error.name].code).send(ERROR_CODE[error.name]);
   }
 });

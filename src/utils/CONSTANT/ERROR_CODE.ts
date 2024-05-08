@@ -21,6 +21,11 @@ const ERROR_CODE = {
     errorInstance: EmptyResultError,
     code: 404,
   },
+  ChildExist: {
+    message: "Child Element Exist, Delete child first",
+    errorInstance: "ChildExist",
+    code: 409,
+  },
   SequelizeDatabaseError: {
     message: "Database Error",
     errorInstance: DatabaseError,

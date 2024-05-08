@@ -88,9 +88,9 @@ export const getPost = async (postId?: string, getType?: string) => {
 export const updatePost = async (id: string, postParam: PostParam) => {
   try {
     const updatePostTuples = {
-      ...(!!postParam.title && { label: postParam.title }),
+      ...(!!postParam.title && { title: postParam.title }),
       ...(!!postParam.content && {
-        description: postParam.content,
+        content: postParam.content,
       }),
       ...(!!postParam.isPresented && {
         isPresented: postParam.isPresented,
@@ -107,9 +107,36 @@ export const updatePost = async (id: string, postParam: PostParam) => {
         },
       }
     );
+
     if (updatedPost[0] < 1) {
       throw new CustomError("NotFoundError", "result not found in database");
     }
+
     return updatePostTuples;
-  } catch (error) {}
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const deletePost = async (id: string) => {
+  try {
+    const deletePost = await Post.destroy({
+      where: {
+        id: id,
+      },
+    });
+    const deletePostComment = await Post.destroy({
+      where: {
+        parentPostId: id,
+      },
+    });
+    if (deletePost < 1) {
+      throw new CustomError("NotFoundError", "result not found in database");
+    }
+    return deletePost;
+
+    // const deletedPostResp = await deletePost.
+  } catch (error) {
+    throw error;
+  }
 };

@@ -100,7 +100,10 @@ export const createProduct = async (productParam: ProductParam) => {
   }
 };
 
-export const getProduct = async (productId?: string) => {
+export const getProduct = async (
+  productId?: string,
+  productTypeId?: string
+) => {
   try {
     if (!!productId) {
       const singleProduct = await Product.findOne({
@@ -112,12 +115,20 @@ export const getProduct = async (productId?: string) => {
       return singleProduct.dataValues;
     }
 
+    if (!!productTypeId) {
+      const products = await Product.findAll({
+        where: { typeId: productTypeId },
+      });
+      return products.map((product) => product.dataValues);
+    }
+
     const products = await Product.findAll();
     return products.map((product) => product.dataValues);
   } catch (error) {
     throw error;
   }
 };
+
 export const updateProduct = async (id: string, productParam: ProductParam) => {
   try {
     const updateProductTuples = {
@@ -145,6 +156,29 @@ export const updateProduct = async (id: string, productParam: ProductParam) => {
     }
 
     return updateProductTuples;
+  } catch (error) {
+    throw error;
+  }
+};
+export const deleteProductType = async (id: string) => {
+  try {
+    const deleteProductType = await ProductType.destroy({ where: { id: id } });
+    if (deleteProductType < 1) {
+      throw new CustomError("NotFoundError", "result not found in database");
+    }
+    return deleteProductType;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const deleteProduct = async (id: string) => {
+  try {
+    const deleteProduct = await Product.destroy({ where: { id: id } });
+    if (deleteProduct < 1) {
+      throw new CustomError("NotFoundError", "result not found in database");
+    }
+    return deleteProduct;
   } catch (error) {
     throw error;
   }
