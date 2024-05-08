@@ -9,7 +9,8 @@ import {
   getPost,
   updatePost,
 } from "../service/postService";
-import { isLoggedIn } from "../utils/common/middleware";
+
+import { isAdmin } from "../utils/common/middleware";
 
 const expressRouter = require("express");
 
@@ -71,7 +72,7 @@ router.patch("/:id", async (req, res) => {
   }
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", isAdmin, async (req, res) => {
   const { id } = req.params;
 
   try {

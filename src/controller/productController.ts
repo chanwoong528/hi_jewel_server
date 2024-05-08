@@ -87,7 +87,7 @@ router.patch("/type/:id", upload.single("image"), isAdmin, async (req, res) => {
 });
 
 //Product [TYPE] Delete
-router.delete("/type/:id", async (req, res) => {
+router.delete("/type/:id", isAdmin, async (req, res) => {
   const { id } = req.params;
 
   try {
@@ -212,7 +212,7 @@ router.patch("/:id", upload.single("image"), isAdmin, async (req, res) => {
 });
 
 //Product Delete
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", isAdmin, async (req, res) => {
   const { id } = req.params;
 
   try {
