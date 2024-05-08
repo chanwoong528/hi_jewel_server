@@ -47,7 +47,7 @@ router.post("/", (req, res) => {
     });
 });
 
-router.patch("/:id", async (req, res) => {
+router.patch("/:id", isAdmin, async (req, res) => {
   const { title, content, type, isPresented } = req.body;
   const { id } = req.params;
 
