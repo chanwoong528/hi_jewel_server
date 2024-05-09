@@ -1,6 +1,7 @@
 //@ts-nocheck
 import Sequelize from "sequelize";
 import { sequelize } from "../postgres.index";
+import { ProductTypeOrder } from "./product_type_order.model";
 
 export const ProductType = sequelize.define(
   "productType",
@@ -53,3 +54,8 @@ export const ProductType = sequelize.define(
     ],
   }
 );
+ProductType.hasOne(ProductTypeOrder, {
+  sourceKey: "id",
+  as: "productTypeOrders",
+  foreignKey: "productTypeId",
+});

@@ -1,6 +1,5 @@
 import { Post } from "../Model/postgres/post.model";
 import { CustomError } from "../utils/exceptions/CustomError";
-import { sequelize } from "../Model/postgres.index";
 import { Op } from "sequelize";
 
 interface PostParam {

@@ -26,7 +26,10 @@ const productType = require("./postgres/product_type.model");
 const product = require("./postgres/product.model");
 const hiJewelUser = require("./postgres/hijewel_user.model");
 const post = require("./postgres/post.model");
+const order = require("./postgres/product_type_order.model");
+
 //** Model  */
+
 export const db = {
   Sequelize: Sequelize,
   sequelize,
@@ -35,6 +38,7 @@ export const db = {
   product: product,
   hiJewelUser: hiJewelUser,
   post: post,
+  order: order,
 };
 
 Object.keys(db).forEach((model) => {
@@ -42,3 +46,5 @@ Object.keys(db).forEach((model) => {
     db[model].associate(db);
   }
 });
+
+

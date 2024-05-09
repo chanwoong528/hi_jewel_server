@@ -1,6 +1,10 @@
+import { Sequelize } from "sequelize";
 import { Product } from "../Model/postgres/product.model";
 import { ProductType } from "../Model/postgres/product_type.model";
+import { ProductTypeOrder } from "../Model/postgres/product_type_order.model";
+import { joinTwoArray } from "../utils/common/commonUtil";
 import { CustomError } from "../utils/exceptions/CustomError";
+import sequelize from "sequelize/types/sequelize";
 
 export interface ProductParam {
   userId: string;
@@ -32,7 +36,12 @@ export const createProductType = async (productTypeParam: ProductTypeParam) => {
       );
     }
     const newProductType = await ProductType.create({ ...productTypeParam });
-    return newProductType.dataValues;
+
+    const newOrderProductType = await ProductTypeOrder.create({
+      productTypeId: newProductType.dataValues.id,
+    });
+
+    return { ...newProductType.dataValues, ...newOrderProductType.dataValues };
   } catch (error) {
     throw error;
   }
@@ -41,17 +50,42 @@ export const createProductType = async (productTypeParam: ProductTypeParam) => {
 export const getProductType = async (productTypeId?: string) => {
   try {
     if (!!productTypeId) {
+      //Single ProductType get
       const productType = await ProductType.findOne({
         where: { id: productTypeId },
       });
       if (!productType) {
         throw new CustomError("NotFoundError", "result not found in database");
       }
-      return productType.dataValues;
+
+      const productTypeOrder = await ProductTypeOrder.findOne({
+        where: { productTypeId: productTypeId },
+      });
+      return { ...productType.dataValues, ...productTypeOrder?.dataValues };
     }
 
-    const productTypes = await ProductType.findAll();
-    return productTypes.map((productType) => productType.dataValues);
+    const productTypes = await ProductType.findAll({
+      include: [
+        {
+          model: ProductTypeOrder,
+          required: true,
+          as: "productTypeOrders",
+          on: Sequelize.literal(
+            'CAST("productType".id as varchar) = "productTypeOrders"."productTypeId"'
+          ),
+        },
+      ],
+    });
+    // ...
+
+    const returnData = await productTypes
+      .map((productType) => productType.dataValues)
+      .map((productType) => {
+        const orderDataVal = productType.productTypeOrders.dataValues;
+        return { ...productType, ...orderDataVal };
+      });
+
+    return returnData;
   } catch (error) {
     throw error;
   }
