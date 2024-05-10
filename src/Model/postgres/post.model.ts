@@ -20,7 +20,7 @@ export const Post = sequelize.define(
     },
     content: {
       //html
-      type: Sequelize.STRING,
+      type: Sequelize.TEXT,
 
       allowNull: false,
       validate: {
@@ -77,4 +77,3 @@ export const Post = sequelize.define(
 //** custom Queries */
 
 // Post.associations = {
-

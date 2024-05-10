@@ -40,7 +40,7 @@ router.post("/", (req, res) => {
         .send(RESPONSE_CODE["created"](result));
     })
     .catch((error) => {
-      console.log(error);
+      console.warn(error);
       return res
         .status(ERROR_CODE[error.name].code)
         .send(ERROR_CODE[error.name]);
@@ -67,7 +67,7 @@ router.patch("/:id", isAdmin, async (req, res) => {
       .status(RESPONSE_CODE["patch"](updatedPost).code)
       .send(RESPONSE_CODE["patch"](updatedPost));
   } catch (error) {
-    console.log(error);
+    console.warn(error);
     return res.status(ERROR_CODE[error.name].code).send(ERROR_CODE[error.name]);
   }
 });
