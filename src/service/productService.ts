@@ -2,9 +2,7 @@ import { Sequelize } from "sequelize";
 import { Product } from "../Model/postgres/product.model";
 import { ProductType } from "../Model/postgres/product_type.model";
 import { ProductTypeOrder } from "../Model/postgres/product_type_order.model";
-import { joinTwoArray } from "../utils/common/commonUtil";
 import { CustomError } from "../utils/exceptions/CustomError";
-import sequelize from "sequelize/types/sequelize";
 
 export interface ProductParam {
   userId: string;
@@ -63,25 +61,25 @@ export const getProductType = async (productTypeId?: string) => {
       });
       return { ...productType.dataValues, ...productTypeOrder?.dataValues };
     }
-
     const productTypes = await ProductType.findAll({
       include: [
         {
           model: ProductTypeOrder,
-          required: true,
           as: "productTypeOrders",
-          on: Sequelize.literal(
-            'CAST("productType".id as varchar) = "productTypeOrders"."productTypeId"'
-          ),
+          required: false,
+          on: {
+            id: Sequelize.literal(
+              '"productType".id = "productTypeOrders"."productTypeId"'
+            ),
+          },
         },
       ],
     });
-    // ...
 
     const returnData = await productTypes
       .map((productType) => productType.dataValues)
       .map((productType) => {
-        const orderDataVal = productType.productTypeOrders.dataValues;
+        const orderDataVal = productType.productTypeOrders?.dataValues;
         return { ...productType, ...orderDataVal };
       });
 

@@ -4,7 +4,7 @@ export const ProductTypeOrder = sequelize.define(
   "productTypeOrder",
   {
     productTypeId: {
-      type: Sequelize.STRING,
+      type: Sequelize.UUID,
       primaryKey: true,
     },
     order: {
@@ -18,7 +18,7 @@ export const ProductTypeOrder = sequelize.define(
     indexes: [
       {
         unique: true,
-        fields: ["productTypeId", "order"], // Whatever other field you need to make unique
+        fields: ["order", "productTypeId"], // Whatever other field you need to make unique
       },
     ],
   }

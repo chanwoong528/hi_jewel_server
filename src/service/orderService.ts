@@ -26,6 +26,20 @@ export const createProductTypeOrder = async (
   }
 };
 
+export const upsertProductTypeOrder = async (id: String, order: number) => {
+  try {
+    const targetUpsert = await ProductTypeOrder.upsert({
+      productTypeId: id,
+      order: order,
+    });
+    const data = await targetUpsert[0].dataValues;
+
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const getProductTypeOrder = async (productTypeId?: string) => {
   try {
     const currentOrderType = await ProductTypeOrder.findAll({});
@@ -35,6 +49,7 @@ export const getProductTypeOrder = async (productTypeId?: string) => {
   }
 };
 
+//**No need to use due to deleting as productType deletes */
 export const deleteProductTypeOrder = async (productTypeId: string) => {
   try {
     const targetDeleteProductTypeOrder = await ProductTypeOrder.destroy({

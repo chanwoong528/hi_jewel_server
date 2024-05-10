@@ -58,4 +58,5 @@ ProductType.hasOne(ProductTypeOrder, {
   sourceKey: "id",
   as: "productTypeOrders",
   foreignKey: "productTypeId",
+  onDelete: "CASCADE",
 });
