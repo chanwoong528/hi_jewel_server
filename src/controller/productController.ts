@@ -184,7 +184,7 @@ router.post("/", upload.single("image"), isAdmin, async (req, res) => {
   }
 });
 
-//update product type
+//update product
 //patch:=>  자원의 부분 교체, 자원교체시 일부 필드 필요
 router.patch("/:id", upload.single("image"), isAdmin, async (req, res) => {
   const { title, description, typeId, isPresented } = req.body;
