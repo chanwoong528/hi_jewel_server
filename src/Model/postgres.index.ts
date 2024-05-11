@@ -27,7 +27,7 @@ const product = require("./postgres/product.model");
 const hiJewelUser = require("./postgres/hijewel_user.model");
 const post = require("./postgres/post.model");
 const order = require("./postgres/product_type_order.model");
-
+const stats = require("./postgres/stats.model");
 //** Model  */
 
 export const db = {
@@ -39,6 +39,7 @@ export const db = {
   hiJewelUser: hiJewelUser,
   post: post,
   order: order,
+  stats: stats,
 };
 
 Object.keys(db).forEach((model) => {
@@ -46,5 +47,3 @@ Object.keys(db).forEach((model) => {
     db[model].associate(db);
   }
 });
-
-
