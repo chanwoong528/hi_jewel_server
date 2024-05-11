@@ -22,6 +22,11 @@ router.patch("/", async (req, res) => {
   }
 });
 
+export enum GetStatType {
+  totalProduct = "totalProduct",
+  viewsByDateFive = "viewsByDateFive",
+}
+
 router.get("/", isAdmin, async (req, res) => {});
 
 module.exports = router;
