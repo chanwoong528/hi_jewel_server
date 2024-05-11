@@ -56,7 +56,7 @@ router.post("/type", upload.single("image"), isAdmin, (req, res) => {
       });
     });
   } catch (error) {
-    console.log("error", error);
+    console.warn("error", error);
     return res.status(ERROR_CODE[error.name].code).send(ERROR_CODE[error.name]);
   }
 });

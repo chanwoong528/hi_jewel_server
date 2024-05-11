@@ -30,3 +30,10 @@ export async function uploadImageToImgBB(req) {
     throw error;
   }
 }
+
+export const joinTwoArray = (arr1, arr2, key1, key2) => {
+  return arr1.map((item1) => {
+    const item2 = arr2.find((item) => item[key1] === item1[key2]);
+    return { ...item1, ...item2 };
+  });
+};
