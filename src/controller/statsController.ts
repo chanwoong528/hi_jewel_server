@@ -2,8 +2,7 @@
 import RESPONSE_CODE from "../utils/CONSTANT/RESPONSE_CODE";
 import ERROR_CODE from "../utils/CONSTANT/ERROR_CODE";
 
-import { upsertStat } from "../service/statService";
-import { isAdmin } from "../utils/common/middleware";
+import { getStatsByType, upsertStat } from "../service/statService";
 
 const expressRouter = require("express");
 
@@ -23,10 +22,22 @@ router.patch("/", async (req, res) => {
 });
 
 export enum GetStatType {
-  totalProduct = "totalProduct",
-  viewsByDateFive = "viewsByDateFive",
+  totalProductCount = "totalProductCount",
+  viewsByDateArr = "viewsByDateArr",
 }
 
-router.get("/", isAdmin, async (req, res) => {});
+router.get("/", async (req, res) => {
+  try {
+    const { type, curDate } = req.query;
+
+    const result = await getStatsByType(type, curDate);
+    return res
+      .status(RESPONSE_CODE["retrieve"](result).code)
+      .send(RESPONSE_CODE["retrieve"](result));
+  } catch (error) {
+    console.warn("error in getting stats", error);
+    return res.status(ERROR_CODE[error.name].code).send(ERROR_CODE[error.name]);
+  }
+});
 
 module.exports = router;

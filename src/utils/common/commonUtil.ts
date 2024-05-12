@@ -37,3 +37,18 @@ export const joinTwoArray = (arr1, arr2, key1, key2) => {
     return { ...item1, ...item2 };
   });
 };
+
+export const getDateRangeArray = (curDate?: string, daysInterval: number) => {
+  //daysInteval represent +- days from current date
+  const currentDate = curDate ? new Date(curDate) : new Date();
+
+  const dateRange = [];
+
+  for (let i = -daysInterval; i <= daysInterval; i++) {
+    const date = new Date();
+    date.setDate(currentDate.getDate() + i);
+    dateRange.push(date.toISOString().split("T")[0]);
+  }
+
+  return dateRange;
+};
