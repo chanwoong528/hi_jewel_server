@@ -34,6 +34,7 @@ app.use("/user", require("./controller/userController"));
 app.use("/product", require("./controller/productController"));
 app.use("/post", require("./controller/postController"));
 app.use("/order", require("./controller/orderController"));
+app.use("/stats", require("./controller/statsController"));
 //-- Controller Inject --
 
 // DB Connection

@@ -150,11 +150,12 @@ export const getProduct = async (
     if (!!productTypeId) {
       const products = await Product.findAll({
         where: { typeId: productTypeId },
+        order: [["createdAt", "DESC"]],
       });
       return products.map((product) => product.dataValues);
     }
 
-    const products = await Product.findAll();
+    const products = await Product.findAll({ order: [["createdAt", "DESC"]] });
     return products.map((product) => product.dataValues);
   } catch (error) {
     throw error;
